@@ -1,17 +1,21 @@
+import Header from "./components/Header";
+import WeatherApp from "./components/WeatherApp";
+import body_bg from "./assets/images/body-bg.png";
+
 function App() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-950">
-      <div className="text-center rounded-xl border border-gray-800 bg-gray-900 px-10 py-8 shadow-xl">
-        <h1 className="text-3xl font-bold text-gray-100">
-          Welcome to React Practice 🚀
-        </h1>
+    <>
+      <div className="min-h-screen bg-body bg-no-repeat bg-cover"
+      style={{backgroundImage: `url(${body_bg})`}}
+      >
+        <Header></Header>
 
-        <p className="mt-2 text-gray-500">
-          Development branch is connected and ready.
-        </p>
+        <main className="min-h-screen grid place-items-center">
+          <WeatherApp></WeatherApp>
+        </main>
       </div>
-    </div>
-  )
+    </>
+  );
 }
 
-export default App
+export default App;

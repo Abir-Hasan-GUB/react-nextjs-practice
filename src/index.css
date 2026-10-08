@@ -1,1 +1,16 @@
 @import "tailwindcss";
+
+@theme{
+  --color-body: #1d1e28;
+  --color-light: #ffffff;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  @apply bg-body font-[Roboto] text-light bg-no-repeat bg-cover;
+}
