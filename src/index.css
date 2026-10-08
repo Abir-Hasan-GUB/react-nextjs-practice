@@ -5,6 +5,11 @@
   --color-light: #ffffff;
 }
 
+@utility container {
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
 html,
 body,
 #root {
