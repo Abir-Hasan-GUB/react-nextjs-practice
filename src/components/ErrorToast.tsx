@@ -17,7 +17,7 @@ export default function ErrorToast({ message, onClose }: ErrorToastProps) {
   return (
     <div
       role="alert"
-      className="fixed right-5 top-5 z-[200] flex w-[calc(100%-2.5rem)] max-w-sm items-start gap-3 rounded-xl border border-red-400/20 bg-[#1D1E28]/95 p-4 text-white shadow-2xl backdrop-blur-xl"
+      className="fixed right-5 top-24 z-[200] flex w-[calc(100%-2.5rem)] max-w-sm items-start gap-3 rounded-xl border border-red-400/20 bg-[#1D1E28]/95 p-4 text-white shadow-2xl backdrop-blur-xl"
     >
       <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-red-500/15 text-red-400">
         !

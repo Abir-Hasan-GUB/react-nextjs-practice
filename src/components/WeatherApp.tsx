@@ -6,7 +6,7 @@ import humidity from "../assets/images/icons/humidity.svg";
 import cloudy from "../assets/images/icons/cloud.svg";
 import wind from "../assets/images/icons/wind.svg";
 import pin from "../assets/images/pin.svg";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Loading from "./Loading";
 import ErrorToast from "./ErrorToast";
 
@@ -29,12 +29,19 @@ export default function WeatherApp() {
   useEffect(() => {
     const getWeatherInfo = async (location: string) => {
       setLoading(true);
-      const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=${API_KEY}`;
+      setError(null);
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(location)}&units=metric&appid=${API_KEY}`;
       try {
         const response = await fetch(url);
 
         if (!response.ok) {
-          throw new Error(`HTTP Error: ${response.status}`);
+          // OpenWeather sends { cod, message } in the error body, e.g. "city not found"
+          const errorData = await response.json().catch(() => null);
+          throw new Error(
+            errorData?.message
+              ? `${errorData.message} (${response.status})`
+              : `HTTP Error: ${response.status}`,
+          );
         }
 
         const data = await response.json();
@@ -47,13 +54,15 @@ export default function WeatherApp() {
           temperature: Math.round(data.main.temp),
           humidity: data.main.humidity,
           clouds: data.clouds.all,
-          wind: Math.round(data.wind.speed),
+          wind: data.wind.speed,
         }));
       } catch (error) {
         setError(
-          error instanceof Error
-            ? error.message
-            : "Unable to fetch weather data.",
+          error instanceof TypeError
+            ? "Network error. Please check your internet connection."
+            : error instanceof Error
+              ? error.message
+              : "Unable to fetch weather data.",
         );
       } finally {
         setLoading(false);
@@ -62,6 +71,8 @@ export default function WeatherApp() {
 
     getWeatherInfo("dhaka");
   }, [API_KEY]);
+
+  const handleCloseError = useCallback(() => setError(null), []);
 
   const today = new Date();
   const date = today.toLocaleDateString("en-US", {
@@ -76,6 +87,7 @@ export default function WeatherApp() {
       {isLoading ? (
         <Loading />
       ) : (
+        weatherData.city && (
         <section className="">
           <div className="container">
             <div className="grid bg-black/20 rounded-xl backdrop-blur-md border-2 lg:border-[3px] border-white/[14%] px-4 lg:px-14 py-6 lg:py-10 min-h-[520px] max-w-[1058px] mx-auto">
@@ -141,7 +153,7 @@ export default function WeatherApp() {
                     <li className="text-sm lg:text-lg flex items-center justify-between space-x-4">
                       <span>Wind</span>
                       <div className="inline-flex space-x-4">
-                        <p>{weatherData.wind * 3.6}km/h</p>
+                        <p>{Math.round(weatherData.wind * 3.6)}km/h</p>
                         <img src={wind} alt="wind" />
                       </div>
                     </li>
@@ -151,9 +163,10 @@ export default function WeatherApp() {
             </div>
           </div>
         </section>
+        )
       )}
 
-      {error && <ErrorToast message={error} onClose={() => setError(null)} />}
+      {error && <ErrorToast message={error} onClose={handleCloseError} />}
     </>
   );
 }
