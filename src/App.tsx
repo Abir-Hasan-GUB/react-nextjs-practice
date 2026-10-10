@@ -1,10 +1,11 @@
 import Header from "./components/Header";
 import WeatherApp from "./components/WeatherApp";
 import body_bg from "./assets/images/body-bg.png";
+import { WeatherProvider } from "./context/WeatherContext";
 
 function App() {
   return (
-    <>
+    <WeatherProvider>
       <div
         className="min-h-screen bg-body bg-no-repeat bg-cover"
         style={{ backgroundImage: `url(${body_bg})` }}
@@ -15,7 +16,7 @@ function App() {
           <WeatherApp></WeatherApp>
         </main>
       </div>
-    </>
+    </WeatherProvider>
   );
 }
 
